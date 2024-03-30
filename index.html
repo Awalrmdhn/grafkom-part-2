@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Spin Wheel kel 2</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="spinBtn">spin</div>
+        <div class="wheel">  
+            <div class="numbers" style="--i:1;--clr:#fb0054;
+            "><span>100</span></div>
+            <div class="numbers" style="--i:2;--clr:#00f2ff;
+            "><span>50</span></div>
+            <div class="numbers" style="--i:3;--clr:#00ff1e;
+            "><span>1</span></div>
+            <div class="numbers" style="--i:4;--clr:#ffeb0a;
+            "><span>0</span></div>
+            <div class="numbers" style="--i:5;--clr:#0800ff;
+            "><span>5</span></div>
+            <div class="numbers" style="--i:6;--clr:#6b01b1;
+            "><span>10</span></div>
+            <div class="numbers" style="--i:7;--clr:#e100ff;
+            "><span>20</span></div>
+            <div class="numbers" style="--i:8;--clr:#848484;
+            "><span>200</span></div>
+        </div>
+    </div>
+    <script>
+        let wheel = document.querySelector('.wheel');
+        let spinBtn = document.querySelector('.spinBtn');
+        let value = math.ceil(Math.random() * 3000);
+
+        spinBtn.oneclick = function(){
+            wheel.style.transform = "rotate("+ value + " deg)";
+            value += math.ceil(Math.random() * 3000);
+        }
+    </script>
+</body>
+</html>
