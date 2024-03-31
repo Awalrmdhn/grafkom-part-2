@@ -7,34 +7,36 @@
 </head>
 <body>
     <div class="container">
-        <div class="spinBtn">spin</div>
+        <div class="spinBtn" onclick="spinWheel()">spin</div>
         <div class="wheel">  
-            <div class="numbers" style="--i:1;--clr:#fb0054;
-            "><span>100</span></div>
-            <div class="numbers" style="--i:2;--clr:#00f2ff;
-            "><span>50</span></div>
-            <div class="numbers" style="--i:3;--clr:#00ff1e;
-            "><span>1</span></div>
-            <div class="numbers" style="--i:4;--clr:#ffeb0a;
-            "><span>0</span></div>
-            <div class="numbers" style="--i:5;--clr:#0800ff;
-            "><span>5</span></div>
-            <div class="numbers" style="--i:6;--clr:#6b01b1;
-            "><span>10</span></div>
-            <div class="numbers" style="--i:7;--clr:#e100ff;
-            "><span>20</span></div>
-            <div class="numbers" style="--i:8;--clr:#848484;
-            "><span>200</span></div>
+            <div class="numbers" style="--i:1;--clr:#fb0054;"><span>70</span></div>
+            <div class="numbers" style="--i:2;--clr:#00f2ff;"><span>50</span></div>
+            <div class="numbers" style="--i:3;--clr:#ddff00;"><span>1</span></div>
+            <div class="numbers" style="--i:4;--clr:#04ff00;"><span>0</span></div>
+            <div class="numbers" style="--i:5;--clr:#0800ff;"><span>5</span></div>
+            <div class="numbers" style="--i:6;--clr:#6b01b1;"><span>10</span></div>
+            <div class="numbers" style="--i:7;--clr:#e100ff;"><span>20</span></div>
+            <div class="numbers" style="--i:8;--clr:#848484;"><span>200</span></div>
         </div>
     </div>
     <script>
-        let wheel = document.querySelector('.wheel');
-        let spinBtn = document.querySelector('.spinBtn');
-        let value = math.ceil(Math.random() * 3000);
+        function spinWheel() {
+            let wheel = document.querySelector('.wheel');
+            let numbers = document.querySelectorAll('.numbers');
 
-        spinBtn.oneclick = function(){
-            wheel.style.transform = "rotate("+ value + " deg)";
-            value += math.ceil(Math.random() * 3000);
+            // Pilih angka secara acak
+            let randomIndex = Math.floor(Math.random() * numbers.length);
+            let selectedNumber = numbers[randomIndex].textContent;
+
+            // Memutar roda
+            let rotations = 3 + Math.floor(Math.random() * 5); // Jumlah putaran tambahan secara acak (misalnya, 3 hingga 7 putaran tambahan)
+            wheel.style.transition = "transform 3s ease"; // menambahkan transisi agar perputaran menjadi lebih mulus
+            wheel.style.transform = "rotate(" + (360 * rotations + (4 - randomIndex) * (360 / numbers.length)) + "deg)";
+
+            // Menampilkan popup dengan angka yang terpilih
+            setTimeout(function() {
+                alert("Angka yang terpilih: " + selectedNumber);
+            }, 2000); // Sesuaikan nilai timeout dengan kecepatan putaran roda
         }
     </script>
 </body>
