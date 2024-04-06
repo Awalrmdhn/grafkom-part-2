@@ -1,46 +1,236 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Spin Wheel kel 2</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <style>
+        body{
+            background-color: #333;
+        }
+
+        .header{
+            padding: 40px;
+            color: #fff;
+            margin: 0 auto;
+            margin-bottom: 40px;
+        }
+        .header h1,p{
+            text-align: center;
+        }
+
+        .wheel{
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+        .center-circle{
+            width: 100px;
+            height: 100px;
+            border-radius: 60px;
+            background-color: #fff;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .triangle{
+            width: 0; 
+            height: 0; 
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent; 
+            border-right: 30px solid white; 
+            position: absolute;
+            top: 50%;
+            right: -220%;
+            transform: translateY(-50%);
+        }
+        textarea{
+            background-color: rgba(20, 20, 20, 0.2);
+            caret-color: #fff;
+            resize: none;
+            color: #fff;
+        }
+        .inputArea{
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+    </style>
+
 </head>
-<body>
+
+<body >
     <div class="header">
-        <h1>YOU WON</h1>
-        <P id="winner">none</P>
-    <div class="container">
-        <div class="spinBtn" onclick="spinWheel()"></div>
-        <div class="wheel">  
-            <div class="numbers" style="--i:1;--clr:#ffaa00;"><span>70</span></div>
-            <div class="numbers" style="--i:2;--clr:#00f2ff;"><span>50</span></div>
-            <div class="numbers" style="--i:3;--clr:#ddff00;"><span>1</span></div>
-            <div class="numbers" style="--i:4;--clr:#04ff00;"><span>0</span></div>
-            <div class="numbers" style="--i:5;--clr:#0800ff;"><span>5</span></div>
-            <div class="numbers" style="--i:6;--clr:#6b01b1;"><span>10</span></div>
-            <div class="numbers" style="--i:7;--clr:#e100ff;"><span>20</span></div>
-            <div class="numbers" style="--i:8;--clr:#848484;"><span>200</span></div>
-        </div>
+        <h1>WINNER</h1>
+        <p id="winner">NONE</p>
     </div>
+    <div class="wheel">
+        <canvas class="" id="canvas" width="500" height="500"></canvas>
+        <div class="center-circle" onclick="spin()">
+            <div class="triangle"></div>
+        </div>
+        
+    </div>
+    <div class="inputArea" onchange="createWheel()">
+        <textarea rows="20" cols="30" >cat
+dog
+cow
+duck
+sheep
+goat
+bird
+neko
+chicken</textarea>
+    </div>
+
     <script>
-        function spinWheel() {
-            let wheel = document.querySelector('.wheel');
-            let numbers = document.querySelectorAll('.numbers');
-
-            // Pilih angka secara acak
-            let randomIndex = Math.floor(Math.random() * numbers.length);
-            let selectedNumber = numbers[randomIndex].textContent;
-
-            // Memutar roda
-            let rotations = 3 + Math.floor(Math.random() * 5); // Jumlah putaran tambahan secara acak (misalnya, 3 hingga 7 putaran tambahan)
-            wheel.style.transition = "transform 3s ease"; // menambahkan transisi agar perputaran menjadi lebih mulus
-            wheel.style.transform = "rotate(" + (360 * rotations + (4 - randomIndex) * (360 / numbers.length)) + "deg)";
-
-            // Menampilkan popup dengan angka yang terpilih
-            setTimeout(function() {
-                alert("Angka yang terpilih: " + selectedNumber);
-            }, 2000); // Sesuaikan nilai timeout dengan kecepatan putaran roda
+        function randomColor(){
+            r = Math.floor(Math.random() * 255);
+            g = Math.floor(Math.random() * 255);
+            b = Math.floor(Math.random() * 255);
+            return {r,g,b}
+        }
+        function toRad(deg){
+            return deg * (Math.PI / 180.0);
+        }
+        function randomRange(min,max){
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        function easeOutSine(x) {
+            return Math.sin((x * Math.PI) / 2);
+        }
+        // get percent between 2 number
+        function getPercent(input,min,max){
+            return (((input - min) * 100) / (max - min))/100
         }
     </script>
+
+    <script>
+        const canvas = document.getElementById("canvas")
+        const ctx = canvas.getContext("2d")
+        const width = document.getElementById("canvas").width
+        const height = document.getElementById("canvas").height
+
+        const centerX = width/2
+        const centerY = height/2
+        const radius = width/2
+
+        let items = document.getElementsByTagName("textarea")[0].value.split("\n");
+
+        let currentDeg = 0
+        let step = 360/items.length
+        let colors = []
+        let itemDegs = {}
+
+        for(let i = 0 ; i < items.length + 1;i++){
+            colors.push(randomColor())
+        }
+
+        function createWheel(){
+            items = document.getElementsByTagName("textarea")[0].value.split("\n");
+            step = 360/items.length
+            colors = []
+            for(let i = 0 ; i < items.length + 1;i++){
+                colors.push(randomColor())
+            }
+            draw()
+        }
+        draw()
+
+        function draw(){
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, toRad(0), toRad(360))
+            ctx.fillStyle = `rgb(${33},${33},${33})`
+            ctx.lineTo(centerX, centerY);
+            ctx.fill()
+
+            let startDeg = currentDeg;
+            for(let i = 0 ; i < items.length; i++, startDeg += step){
+                let endDeg = startDeg + step
+
+                color = colors[i]
+                let colorStyle = `rgb(${color.r},${color.g},${color.b})`
+
+                ctx.beginPath();
+                rad = toRad(360/step);
+                ctx.arc(centerX, centerY, radius - 2, toRad(startDeg), toRad(endDeg))
+                let colorStyle2 = `rgb(${color.r - 30},${color.g - 30},${color.b - 30})`
+                ctx.fillStyle = colorStyle2
+                ctx.lineTo(centerX, centerY);
+                ctx.fill()
+
+                ctx.beginPath();
+                rad = toRad(360/step);
+                ctx.arc(centerX, centerY, radius - 30, toRad(startDeg), toRad(endDeg))
+                ctx.fillStyle = colorStyle
+                ctx.lineTo(centerX, centerY);
+                ctx.fill()
+
+                // draw text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(toRad((startDeg + endDeg)/2));
+                ctx.textAlign = "center";
+                if(color.r > 150 || color.g > 150 || color.b > 150){
+                    ctx.fillStyle = "#000";
+                }
+                else{
+                    ctx.fillStyle = "#fff";
+                }
+                ctx.font = 'bold 24px serif';
+                ctx.fillText(items[i], 130, 10);
+                ctx.restore();
+
+                itemDegs[items[i]] = 
+                    {
+                    "startDeg": startDeg,
+                    "endDeg" : endDeg
+                    }
+                
+
+                // check winner
+                if(startDeg%360 < 360 && startDeg%360 > 270  && endDeg % 360 > 0 && endDeg%360 < 90 ){
+                    document.getElementById("winner").innerHTML = items[i]
+                }
+            }
+        }
+        
+
+        let speed = 0
+        let maxRotation = randomRange(360* 3, 360 * 6)
+        let pause = false
+        function animate(){
+            if(pause){
+                return
+            }
+            speed = easeOutSine(getPercent(currentDeg ,maxRotation ,0)) * 20
+            if(speed < 0.01){
+                speed = 0
+                pause = true
+            }
+            currentDeg += speed
+            draw()
+            window.requestAnimationFrame(animate);
+        }
+        
+        function spin(){
+            if(speed != 0){
+                return
+            }
+
+            maxRotation = 0;
+            currentDeg = 0
+            createWheel()
+            draw();
+
+            
+            maxRotation = (360 * 6) - itemDegs['cat'].endDeg + 10
+            itemDegs = {}
+            console.log("max",maxRotation)
+            console.log(itemDegs);
+            pause = false
+            window.requestAnimationFrame(animate);
+        }
+
+    </script>
 </body>
+
 </html>
