@@ -30,7 +30,20 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
+            text-align: center;
+            cursor: pointer;
         }
+
+        #btn{
+            width: 200px;
+            
+        }
+
+        .text {
+            display: inline-block;
+            line-height: 100px;
+        }
+
         .triangle{
             width: 0; 
             height: 0; 
@@ -51,7 +64,7 @@
         .inputArea{
             display: flex;
             justify-content: center;
-            margin-top: 40px;
+            margin-top: 10px;
         }
     </style>
 
@@ -65,20 +78,20 @@
     <div class="wheel">
         <canvas class="" id="canvas" width="500" height="500"></canvas>
         <div class="center-circle" onclick="spin()">
-            <div class="triangle"></div>
+            <div class="triangle"></div> 
+            <span class="text">Spin</span>
+            
         </div>
         
     </div>
     <div class="inputArea" onchange="createWheel()">
-        <textarea rows="20" cols="30" >cat
-dog
-cow
-duck
-sheep
-goat
-bird
-neko
-chicken</textarea>
+        <textarea rows="20" cols="30" >20
+10
+100
+zonk
+40
+30
+spin again</textarea>   
     </div>
 
     <script>
@@ -222,7 +235,7 @@ chicken</textarea>
             draw();
 
             
-            maxRotation = (360 * 6) - itemDegs['cat'].endDeg + 10
+            maxRotation = (360 * 6) - itemDegs['20'].endDeg + 10
             itemDegs = {}
             console.log("max",maxRotation)
             console.log(itemDegs);
