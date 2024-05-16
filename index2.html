@@ -4,7 +4,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Skrip SweetAlert -->
     <style>
         body {
-            background-color: #332c2c;
+            background-image: url('./assets/backk.jpg');
+            background-size: cover;
+            background-position: center;
+            background-color: #000;
         }
 
         .header {
@@ -76,10 +79,17 @@
     <div class="wheel">
         <canvas id="canvas" width="500" height="500"></canvas>
         <div class="center-circle" onclick="spin()">
-            <div>tap to spin</div>
+            <div id="spinText">tap to spin</div>
         </div>
         <div class="triangle"></div>
     </div>
+
+    <audio id="clickSound" src="./assets/klik.mp3" preload="auto"></audio>
+    <audio id="spinSound" src="./assets/spin2.mp3" preload="auto"></audio>
+
+    <audio id="winSound" src="./assets/win.wav" preload="auto"></audio>
+    <audio id="failSound" src="./assets/fail.mp3" preload="auto"></audio>
+
     <div class="inputArea">
         <textarea rows="20" cols="30" onchange="createWheel()">Rp.5000
 zonk
@@ -194,6 +204,7 @@ zonk</textarea>
 
         function animate() {
             if (pause) {
+                document.getElementById("spinText").innerText = "tap to spin";
                 return;
             }
 
@@ -222,22 +233,58 @@ zonk</textarea>
             draw();
             maxRotation = randomRange(360 * 10, 360 * 20);
             pause = false;
+            document.getElementById("spinText").innerText = " "; // Mengubah teks menjadi "berputar"
+            document.getElementById("spinSound").play(); // Memainkan suara spin
+            document.getElementById("clickSound").play(); // Memainkan suara saat tombol diklik
             window.requestAnimationFrame(animate);
-            document.getElementById("spintext").style.display = "none"; // Hide the spinText element
         }
+        
+        
 
         function showWinnerMessage() {
             let winnerMessage = document.getElementById("winner").innerHTML;
-            let imageUrl = winnerMessage === 'zonk' ? './assets/zonk.jpg' : `./assets/${winnerMessage}.jpg`;
-            Swal.fire({
-                title: winnerMessage === 'zonk' ? 'ZONK!' : 'Selamat!',
-                text: winnerMessage === 'zonk' ? 'Anda mendapatkan ZONK!' : `Kamu mendapatkan ${winnerMessage}`,
-                imageUrl: imageUrl,
-                imageWidth: 400,
-                imageHeight: 300,
-                imageAlt: 'Custom image'
-            });
+            let imageUrl;
+            let soundUrl;
+        
+            if (winnerMessage === 'zonk') {
+                // Ganti pesan pop-up dan sesuaikan dengan kebutuhan
+                soundUrl = './assets/fail.mp3';
+                Swal.fire({
+                    imageUrl : './assets/zonk.jpg',
+                    title: 'Coba lagi!',
+                    text: 'Stop Berjudi Kamu Gak Dapat Apa-Apa.',
+                    didOpen: () => {
+                        let audioElement = new Audio(soundUrl);
+                        audioElement.play();
+                    }
+                });
+            } else if (winnerMessage === 'NONE') {
+                // Jika tidak ada pemenang
+                Swal.fire({
+                    title: 'Tidak ada pemenang',
+                    text: 'Coba lagi!',
+                    icon: 'info'
+                });
+                return;
+            } else {
+                imageUrl = './assets/duit.jpg';
+                soundUrl = './assets/win.wav';
+                // Menampilkan pop-up dengan pesan dan gambar yang sesuai
+                Swal.fire({
+                    title: 'Selamat!',
+                    text: `Kamu mendapatkan ${winnerMessage}`,
+                    imageUrl: imageUrl,
+                    imageWidth: 400,
+                    imageHeight: 300,
+                    imageAlt: 'Custom image',
+                    didOpen: () => {
+                        let audioElement = new Audio(soundUrl);
+                        audioElement.play();
+                    }
+                });
+            }
         }
+        
     </script>
 </body>
 </html>
