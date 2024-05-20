@@ -274,7 +274,7 @@ zonk</textarea>
                         audioElement.play();
                     }
                 });
-            } else if (winnerMessage === 'NONE') {
+            } else if (winnerMessage === 'NONE'||winnerMessage === '' ) { //line ini (||winnerMessage === '')
                 Swal.fire({
                     title: 'Tidak ada pemenang',
                     text: 'Coba lagi!',
