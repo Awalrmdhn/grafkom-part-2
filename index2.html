@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Skrip SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
-            background-image: url('./assets/backk.jpg');
+            background-image: url('./assets/bgbg.jpg');
             background-size: cover;
             background-position: center;
             background-color: #000;
@@ -52,7 +52,7 @@
             border-left: 20px solid white;
             position: absolute;
             top: 50%;
-            right: 465px;
+            right: 453px;
             transform: translateY(-50%) rotate(180deg);
         }
 
@@ -68,6 +68,15 @@
             justify-content: center;
             margin-top: 40px;
         }
+
+        @keyframes fade-in-out {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .fade-in-out {
+            animation: fade-in-out 2s infinite;
+        }
     </style>
 </head>
 
@@ -79,23 +88,26 @@
     <div class="wheel">
         <canvas id="canvas" width="500" height="500"></canvas>
         <div class="center-circle" onclick="spin()">
-            <div id="spinText">tap to spin</div>
+            <div id="spinText" class="fade-in-out">tap to spin</div> 
         </div>
         <div class="triangle"></div>
     </div>
 
-    <audio id="clickSound" src="./assets/klik.mp3" preload="auto"></audio>
-    <audio id="spinSound" src="./assets/spin2.mp3" preload="auto"></audio>
-
-    <audio id="winSound" src="./assets/win.wav" preload="auto"></audio>
-    <audio id="failSound" src="./assets/fail.mp3" preload="auto"></audio>
+    <audio id="clickSound" src="./assets/clik2.mp3" preload="auto"></audio>
+    <audio id="spinSound" src="./assets/spin.wav" preload="auto"></audio>
+    <audio id="winSound" src="./assets/win2.mp3" preload="auto"></audio>
+    <audio id="failSound" src="./assets/failed.mp3" preload="auto"></audio>
 
     <div class="inputArea">
         <textarea rows="20" cols="30" onchange="createWheel()">Rp.5000
 zonk
-Rp.5000
+Rp.20000
 zonk
-Rp.5000
+Rp.50000
+zonk
+Rp.10000
+zonk
+Rp.100000
 zonk</textarea>
     </div>
 
@@ -202,15 +214,21 @@ zonk</textarea>
         let maxRotation = randomRange(360 * 3, 360 * 6);
         let pause = false;
 
+        document.addEventListener("DOMContentLoaded", () => {
+            const spinText = document.getElementById("spinText");
+            spinText.classList.add("fade-in-out");
+        });
+
         function animate() {
+            const spinText = document.getElementById("spinText");
             if (pause) {
-                document.getElementById("spinText").innerText = "tap to spin";
+                spinText.innerText = "tap to spin";
                 return;
             }
 
             let additionalSpeed = 0;
             if (document.getElementById("winner").innerHTML !== 'zonk') {
-                additionalSpeed = 0.1;
+                additionalSpeed = 0.06;
             }
             speed = easeOutSine(getPercent(currentDeg, maxRotation, 0)) * 20 + additionalSpeed;
 
@@ -228,38 +246,35 @@ zonk</textarea>
             if (speed !== 0) {
                 return;
             }
+            const spinText = document.getElementById("spinText");
+            spinText.classList.remove("fade-in-out");
             currentDeg = 0;
             createWheel();
             draw();
             maxRotation = randomRange(360 * 10, 360 * 20);
             pause = false;
-            document.getElementById("spinText").innerText = " "; // Mengubah teks menjadi "berputar"
+            spinText.innerText = " "; // Mengubah teks menjadi kosong
             document.getElementById("spinSound").play(); // Memainkan suara spin
             document.getElementById("clickSound").play(); // Memainkan suara saat tombol diklik
             window.requestAnimationFrame(animate);
         }
-        
-        
 
         function showWinnerMessage() {
             let winnerMessage = document.getElementById("winner").innerHTML;
             let imageUrl;
             let soundUrl;
-        
+
             if (winnerMessage === 'zonk') {
-                // Ganti pesan pop-up dan sesuaikan dengan kebutuhan
-                soundUrl = './assets/fail.mp3';
+                soundUrl = './assets/failed.mp3';
                 Swal.fire({
-                    imageUrl : './assets/zonk.jpg',
-                    title: 'Coba lagi!',
-                    text: 'Stop Berjudi Kamu Gak Dapat Apa-Apa.',
+                    imageUrl : './assets/losee2.jpg',
+                    title: 'Try Again!',
                     didOpen: () => {
                         let audioElement = new Audio(soundUrl);
                         audioElement.play();
                     }
                 });
             } else if (winnerMessage === 'NONE') {
-                // Jika tidak ada pemenang
                 Swal.fire({
                     title: 'Tidak ada pemenang',
                     text: 'Coba lagi!',
@@ -267,12 +282,11 @@ zonk</textarea>
                 });
                 return;
             } else {
-                imageUrl = './assets/duit.jpg';
-                soundUrl = './assets/win.wav';
-                // Menampilkan pop-up dengan pesan dan gambar yang sesuai
+                imageUrl = './assets/winn.jpg';
+                soundUrl = './assets/win2.mp3';
                 Swal.fire({
-                    title: 'Selamat!',
-                    text: `Kamu mendapatkan ${winnerMessage}`,
+                    title: 'LESGOO NI',
+                    text: `WE GETTIN ${winnerMessage} RICHER. KEEP UP MA BOY`,
                     imageUrl: imageUrl,
                     imageWidth: 400,
                     imageHeight: 300,
@@ -284,7 +298,6 @@ zonk</textarea>
                 });
             }
         }
-        
     </script>
 </body>
 </html>
